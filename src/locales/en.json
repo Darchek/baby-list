@@ -1,0 +1,24 @@
+{
+  "home": {
+    "title": "Benvinguts a la llista de regals per la Joana!",
+    "description": "Ajuda'ns a prepararnos per la petita reservan regals que t'agradaria portar"
+  },
+  "button": {
+    "submit": "Submit",
+    "cancel": "Cancel"
+  },
+  "login": {
+    "title": "Benvinguts a la llista de regals per la Joana!",
+    "description": "Susplau entra les teves credencials per a poder accedir",
+    "email_label": "Adreça email",
+    "email_placeholder": "Entra la teva adreça email",
+    "password_label": "La teva contrasenya",
+    "password_placeholder": "Entra la teva contrasenya",
+    "button": "🎁 Uneix-te a la llista de regals!",
+    "button_login": "Unint-te a la llista...",
+    "ask": "* Demana les credencials al Víctor o la Laura per a poder accedir"
+  },
+  "welcome": {
+    "text": "Benvinguts a la llista de regals per la Joana!"
+  }
+}
