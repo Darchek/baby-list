@@ -41,13 +41,10 @@ export default function AdminProductPage() {
       setIsModalOpen(true);
     };
     
-
-
     const toggleActive = async (productId: number, currentActive: boolean) => {
       try {
         
         const {data, error} = await updateProduct(productId, {active: !currentActive});
-        console.log(data, productId, currentActive);
 
         if (data) {
           await getProducts();

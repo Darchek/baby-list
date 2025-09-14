@@ -43,10 +43,7 @@ export async function PUT(request: NextRequest) {
     const userId = body.user.id;
     const hashPassword = await hashString(body.user.password);
 
-    console.log(userId, body.user.password, hashPassword);
-
     const newUser = await db.updateUser(userId, { password: hashPassword });
-    console.log(newUser);
     
     return NextResponse.json({
       success: true,

@@ -247,7 +247,7 @@ export const db = {
     const { data, error } = await supabase
       .from('products')
       .select('*')
-      .order('created_at', { ascending: false });
+      .order('id', { ascending: false });
 
     if (error) {
       console.error('Error fetching products:', error);
@@ -262,7 +262,7 @@ export const db = {
       .from('products')
       .select('*')
       .eq('active', true)
-      .order('created_at', { ascending: false });
+      .order('id', { ascending: false });
 
     if (error) {
       console.error('Error fetching products:', error);
@@ -305,8 +305,6 @@ export const db = {
     if (updates.active !== undefined) updateData.active = updates.active;
     if (updates.reserved_by !== undefined) updateData.reserved_by = updates.reserved_by;
 
-    console.log(updateData);
-
     const { data, error } = await supabase
       .from('products')
       .update(updateData)
@@ -316,6 +314,21 @@ export const db = {
 
     if (error) {
       console.error('Error updating product:', error);
+      return null;
+    }
+
+    return data ? convertSupabaseRowToProduct(data) : null;
+  },
+
+  // Delete a product
+  async deleteProduct(productId: number): Promise<Product | null> {   
+    const { data, error } = await supabase
+      .from('products')
+      .delete()
+      .eq('id', productId)
+
+    if (error) {
+      console.error('Error deleting product:', error);
       return null;
     }
 

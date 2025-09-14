@@ -30,8 +30,6 @@ export async function POST(request: NextRequest) {
     
     const response = await result.response;
     const text = response.text();
-    
-    console.log(text);
 
     return NextResponse.json({
       success: true,

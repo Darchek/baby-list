@@ -14,7 +14,5 @@ export const sendEmailToReserve = async (user: User, product: Product) => {
         body: JSON.stringify({ user: user, product: product }),
     });
     const { data, error } = await response.json();
-    console.log(data);
-    console.log(error);
     return { data, error };
 }

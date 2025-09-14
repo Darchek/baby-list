@@ -5,30 +5,20 @@ import { getDictionary } from '@/lib/i18n';
 import { useState } from 'react';
 import Image from 'next/image';
 import { useUserStore } from '@/store/userStore';
+import ReserveSure from './ReserveSure';
 
 interface ProductCardProps {
   product: Product;
-  onReserve?: (product: Product) => Promise<void>;
+  onReserve: () => void;
 }
 
 export default function ProductCard({ product, onReserve }: ProductCardProps) {
   const dictionary = getDictionary();
   const { user } = useUserStore();
   const [isReserving, setIsReserving] = useState(false);
-  const isReserved = !!product.reserved_by;
+  const [showReserveSure, setShowReserveSure] = useState(false);
 
-  const handleReserve = async () => {
-    if (isReserved || !onReserve) return;
-    
-    setIsReserving(true);
-    try {
-      await onReserve(product);
-    } catch (error) {
-      console.error('Failed to reserve product:', error);
-    } finally {
-      setIsReserving(false);
-    }
-  };
+  const isReserved = !!product.reserved_by;
 
   return (
     <div className={`rounded-lg shadow-md hover:shadow-lg transition-all duration-300 p-6 border-2 flex flex-col h-full ${
@@ -110,7 +100,7 @@ export default function ProductCard({ product, onReserve }: ProductCardProps) {
       {!isReserved && (
         <div className="pt-4 border-t border-gray-200 mt-auto">
           <button
-            onClick={handleReserve}
+            onClick={() => setShowReserveSure(true) }
             disabled={isReserving}
             className={`w-full px-4 py-2 rounded-md font-medium transition-all duration-200 ${
               isReserving
@@ -129,6 +119,9 @@ export default function ProductCard({ product, onReserve }: ProductCardProps) {
           </button>
         </div>
       )}
+
+
+     { showReserveSure && <ReserveSure product={product} onReserve={onReserve} onCancel={() => setShowReserveSure(false)} setIsReserving={setIsReserving} /> }
     </div>
   );
 }

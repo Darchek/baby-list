@@ -39,7 +39,6 @@ export default function EditProduct({ product, onClose, onProductEdited }: EditP
         
         try {
         setIsSaving(true);
-        console.log(editForm);
         editForm.reserved_by = !editForm.reserved_by ? null : product.reserved_by;
         const { data, error } = await updateProduct(product.id, editForm);
         if (data) {

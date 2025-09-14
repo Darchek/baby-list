@@ -21,7 +21,6 @@ export default function Home() {
 
   const generateText = async () => {
     const text = await geminitGenerateText('Hello, how are you?')
-    console.log(text)
     setGenText(text);
   }
 

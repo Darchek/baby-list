@@ -53,8 +53,8 @@ export default function UserLogin() {
 
   // If no user exists, show mandatory login modal that cannot be closed
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full mx-4">
+    <div className="fixed inset-0 bg-fuchsia-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg shadow-2xl p-8 max-w-md w-full mx-4">
         {/* No close button - modal cannot be closed */}
         <div className="text-center mb-6">
           <div className="text-6xl mb-4">🍼</div>

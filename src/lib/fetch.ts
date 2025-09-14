@@ -116,12 +116,33 @@ export const getProductAllList = async () => {
 };
 
 export const updateProduct = async (id: number, product: Partial<Product>) => {
+    const userToken = getUserToken();
+    if (!userToken) {
+        return { data: null, error: 'No token provided' };
+    }
     const response = await fetch(`/api/products/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${userToken}`,
         },
         body: JSON.stringify({ product: product }),
+      });
+    const { data, error } = await response.json();
+    return { data, error };
+}
+
+export const deleteProduct = async (id: number) => {
+    const userToken = getUserToken();
+    if (!userToken) {
+        return null;
+    }
+    const response = await fetch(`/api/products/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${userToken}`,
+        },
       });
     const { data, error } = await response.json();
     return { data, error };
@@ -140,7 +161,6 @@ export const reserveProduct = async (id: number) => {
         }
     });
     const { data, error } = await response.json();
-    console.log(data);
     return data;
 }
 
