@@ -73,3 +73,15 @@ export const reserveProduct = async (id: number) => {
     console.log(data);
     return data;
 }
+
+export const createProduct = async (product: Partial<Product>) => {
+    const response = await fetch(`/api/products`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ product: product }),
+      });
+    const { data, error } = await response.json();
+    return { data, error };
+}

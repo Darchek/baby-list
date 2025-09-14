@@ -30,6 +30,8 @@ export async function POST(request: NextRequest) {
       active: body.active !== undefined ? body.active : true,
     };
 
+    console.log(productData);
+
     const newProduct = await db.createProduct(productData);
     
     if (!newProduct) {

@@ -1,6 +1,7 @@
 
 'use client';
 
+import { createProduct } from '@/lib/fetch';
 import { useState } from 'react';
 
 interface AddProductProps {
@@ -61,15 +62,9 @@ export default function AddProduct({ onClose, onProductAdded }: AddProductProps)
     setIsSubmitting(true);
     
     try {
-      const response = await fetch('/api/products', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const { data, error } = await createProduct(formData);
 
-      if (response.ok) {
+      if (data) {
         onProductAdded();
         onClose();
       } else {
