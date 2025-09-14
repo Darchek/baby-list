@@ -3,10 +3,7 @@ import UserLogin from '@/components/UserLogin';
 import { getDictionary } from '@/lib/i18n';
 import { useRouter } from 'next/navigation';
 
-
-
-// This is a Server Component that runs on the server and uses SSR
-export default async function Home() {
+export default function Home() {
   const dictionary = getDictionary();
   const router = useRouter();
 

@@ -22,5 +22,8 @@
     "welcome": {
       "text": "Benvinguts a la llista de regals per la Joana!",
       "button": "Veure la llista"
+    },
+    "header": {
+      "title": "Joana - Llista de regals"
     }
   }
