@@ -7,6 +7,7 @@ export interface User {
   email: string;
   password: string;
   created_at?: Date;
+  token?: string;
 }
 
 export interface Product {
@@ -14,8 +15,9 @@ export interface Product {
   name: string;
   description: string;
   url: string;
+  image_url: string;
   active: boolean;
-  reserved_by: number;
+  reserved_by: number | null;
   created_at: Date;
 }
 
@@ -27,6 +29,7 @@ function convertSupabaseRowToUser(row: any): User {
     email: row.email,
     password: row.password,
     created_at: new Date(row.created_at),
+    token: row.token,
   };
 }
 
@@ -36,12 +39,35 @@ function convertSupabaseRowToProduct(row: any): Product {
     name: row.name,
     description: row.description,
     url: row.url,
+    image_url: row.image_url,
     active: row.active,
     reserved_by: row.reserved_by,
     created_at: new Date(row.created_at),
   };
 }
 
+export async function hashString(str: string) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(str);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+function randomHex(length = 5) {
+  const hexChars = "0123456789abcdef";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += hexChars[Math.floor(Math.random() * hexChars.length)];
+  }
+  return result;
+}
+
+export async function generateRandomToken(prev_string: string) {
+  const hex = randomHex(5);
+  const token = await hashString(hex + prev_string);
+  return token;
+}
 
 // Database operations using Supabase
 export const db = {
@@ -60,12 +86,12 @@ export const db = {
     return data ? data.map(convertSupabaseRowToUser) : [];
   },
 
-  // Get user by ID
-  async getUserById(id: string): Promise<User | null> {
+  // Get user by Token
+  async getUserByToken(token: string): Promise<User | null> {
     const { data, error } = await supabase
       .from('user')
       .select('*')
-      .eq('id', id)
+      .eq('token', token)
       .single();
 
     if (error) {
@@ -121,6 +147,8 @@ export const db = {
     
     if (updates.name !== undefined) updateData.name = updates.name;
     if (updates.email !== undefined) updateData.email = updates.email;
+    if (updates.password !== undefined) updateData.password = updates.password;
+    if (updates.token !== undefined) updateData.token = updates.token;
 
     const { data, error } = await supabase
       .from('user')
@@ -156,21 +184,30 @@ export const db = {
   },
 
     // Login user
-  async loginUser(email: string, password: string): Promise<boolean> {
+  async loginUser(email: string, password: string): Promise<User | null> {
+    const hash_password = await hashString(password);
+    
     const { data, error } = await supabase
       .from('user')
       .select('*')
       .eq('email', email)
-      .eq('password', password)
+      .eq('password', hash_password)
       .single();
-
 
     if (error) {
       console.error('Error logging in user:', error);
       throw new Error('Failed to log in user');
     }
 
-    return data;
+    if (!data) {
+      console.error('Error logging in user:', error);
+      throw new Error('Failed to log in user');
+    }
+
+    const new_token = await generateRandomToken(password);
+    const new_data = await this.updateUser(data.id, { token: new_token });
+    console.log(new_data);
+    return new_data;
   },
 
 
@@ -206,6 +243,56 @@ export const db = {
     return data ? data.map(convertSupabaseRowToProduct) : [];
   },
 
+  // Create new product
+  async createProduct(productData: Omit<Product, 'id' | 'created_at' | 'reserved_by'>): Promise<Product | null> {
+    const { data, error } = await supabase
+      .from('products')
+      .insert({
+        name: productData.name,
+        description: productData.description,
+        url: productData.url,
+        image_url: productData.image_url || '',
+        active: productData.active,
+        reserved_by: null,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error creating product:', error);
+      return null;
+    }
+
+    return data ? convertSupabaseRowToProduct(data) : null;
+  },
+
+  // Update a product
+  async updateProduct(productId: number, updates: Partial<Product>): Promise<Product | null> {
+    const updateData: any = {};
+    
+    if (updates.name !== undefined) updateData.name = updates.name;
+    if (updates.description !== undefined) updateData.description = updates.description;
+    if (updates.url !== undefined) updateData.url = updates.url;
+    if (updates.active !== undefined) updateData.active = updates.active;
+    if (updates.reserved_by !== undefined) updateData.reserved_by = updates.reserved_by;
+
+    console.log(updateData);
+
+    const { data, error } = await supabase
+      .from('products')
+      .update(updateData)
+      .eq('id', productId)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error updating product:', error);
+      return null;
+    }
+
+    return data ? convertSupabaseRowToProduct(data) : null;
+  },
+
   // Reserve a product
   async reserveProduct(productId: string, userId: number): Promise<Product | null> {
     // First check if product exists and is not already reserved
@@ -220,7 +307,7 @@ export const db = {
       return null;
     }
 
-    if (existingProduct.reverved_by) {
+    if (existingProduct.reserved_by) {
       // Product is already reserved
       return null;
     }
@@ -228,7 +315,7 @@ export const db = {
     // Reserve the product
     const { data, error } = await supabase
       .from('products')
-      .update({ reverved_by: userId })
+      .update({ reserved_by: userId })
       .eq('id', productId)
       .select()
       .single();

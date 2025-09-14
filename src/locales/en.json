@@ -16,7 +16,8 @@
     "password_placeholder": "Entra la teva contrasenya",
     "button": "🎁 Uneix-te a la llista de regals!",
     "button_login": "Unint-te a la llista...",
-    "ask": "* Demana les credencials al Víctor o la Laura per a poder accedir"
+    "ask": "* Demana les credencials al Víctor o la Laura per a poder accedir",
+    "error": "Les credencials son incorrectes"
   },
   "welcome": {
     "text": "Benvinguts a la llista de regals per la Joana!",

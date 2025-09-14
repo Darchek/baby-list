@@ -10,16 +10,19 @@ export default function UserLogin() {
   const { user, login } = useUserStore();
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!password || !email.trim()) return;
 
-    const data = await loginUser(email, password);
+    const { data, error } = await loginUser(email, password);
     if (data && data.id) {
       setIsLoggingIn(true);
       login(data);
+    } else {
+      setError(dict.login.error);
     }
   };
 
@@ -92,6 +95,12 @@ export default function UserLogin() {
         <div className="mt-4 text-xs text-gray-500 text-center">
           <p>{dict.login.ask}</p>
         </div>
+        
+        {error && (
+          <div className="mt-4 text-red-500 text-center">
+            {error}
+          </div>
+        )}
       </div>
     </div>
   );

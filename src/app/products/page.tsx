@@ -4,7 +4,8 @@ import { getDictionary } from "@/lib/i18n";
 import { useEffect, useState } from 'react';
 import { Product } from '@/lib/database';
 import { useUserStore } from '@/store/userStore';
-import { fetchProducts } from '@/lib/fetch';
+import { getProductList, reserveProduct } from '@/lib/fetch';
+import NotAuthorized from '@/components/NotAuthorized';
 
 export default function ProductsPage() {
     const dictionary = getDictionary();
@@ -16,11 +17,19 @@ export default function ProductsPage() {
     }, []);
 
   const getActiveProducts = async () => {
-    const data = await fetchProducts();
-    console.log(data);
+    const data = await getProductList();
     setProducts(data);
   }
 
+  const onReserveProduct = async (id: number) => {
+    const data = await reserveProduct(id);
+    getActiveProducts();
+  }
+
+      
+  if (!user) {
+    return <NotAuthorized />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -41,33 +50,7 @@ export default function ProductsPage() {
               <ProductCard 
                 key={product.id} 
                 product={product}
-                onReserve={async (product: Product) => {
-                  if (!user?.isLoggedIn) {
-                    alert('Please login first to reserve gifts!');
-                    return;
-                  }
-                  
-                  try {
-                    const response = await fetch(`/api/products/${product.id}/reserve`, {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json',
-                      },
-                      body: JSON.stringify({ userId: user.id }),
-                    });
-                    
-                    if (response.ok) {
-                      // Refresh products list using the new fetch function
-                      const data = await fetchProducts();
-                      setProducts(data);
-                    } else {
-                      throw new Error('Failed to reserve product');
-                    }
-                  } catch (error) {
-                    console.error('Error reserving product:', error);
-                    alert('Failed to reserve product. Please try again.');
-                  }
-                }}
+                onReserve={() => onReserveProduct(product.id)}
               />
             ))}
           </div>
