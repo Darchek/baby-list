@@ -8,7 +8,7 @@ import { getProductAllList, updateProduct } from '@/lib/fetch';
 import AddProduct from "@/components/AddProduct";
 import EditProduct from "@/components/EditProduct";
 
-export default function AdminPage() {
+export default function AdminProductPage() {
     const dictionary = getDictionary();
     const { user } = useUserStore();
     const [products, setProducts] = useState<Product[]>([]);
@@ -19,7 +19,7 @@ export default function AdminPage() {
 
 
     useEffect(() => {
-      if (user && user.id <= 3) {
+      if (user && user?.id <= 3) {
         getProducts();
       }
     }, [user]);
@@ -28,7 +28,6 @@ export default function AdminPage() {
       try {
         setLoading(true);
         const { data } = await getProductAllList();
-        console.log(data);
         setProducts(data || []);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -61,7 +60,7 @@ export default function AdminPage() {
       }
     };
 
-  if (!user || user.id > 3) {
+  if (!user || user?.id > 3) {
     return <NotAuthorized />;
   }
 

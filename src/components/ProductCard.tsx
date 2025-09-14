@@ -17,8 +17,6 @@ export default function ProductCard({ product, onReserve }: ProductCardProps) {
   const [isReserving, setIsReserving] = useState(false);
   const isReserved = !!product.reserved_by;
 
-  console.log(product);
-
   const handleReserve = async () => {
     if (isReserved || !onReserve) return;
     

@@ -1,28 +1,18 @@
-import { db, hashString } from '@/lib/database';
+import { db, getUserByRequest } from '@/lib/database';
 import { sendEmailToReserve } from '@/lib/n8n_webhooks';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await context.params;
-    const authStr = request.headers.get('Authorization') || 'Bearer ';
-    const token = authStr.split('Bearer ')[1];
 
-    if (!token || token.length < 10) {
+    const user = await getUserByRequest(request);
+    if (!user || !user.id) {
       return NextResponse.json(
-        { success: false, error: 'No token provided' },
-        { status: 401 }
+        { success: false, error: 'User not found' },
+        { status: 404 }
       );
     }
-
-    const user = await db.getUserByToken(token);
-    if (!user || !user.id) {
-        return NextResponse.json(
-          { success: false, error: 'Token provided not valid' },
-          { status: 401 }
-        );
-    }
-
     const product = await db.reserveProduct(id, user.id);
 
     if (!product) {

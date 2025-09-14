@@ -1,15 +1,29 @@
 'use client';
-import UserLogin from '@/components/UserLogin';
+
 import { getDictionary } from '@/lib/i18n';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { geminitGenerateText } from '@/lib/fetch';
 
 export default function Home() {
   const dictionary = getDictionary();
   const router = useRouter();
 
+  const [genText, setGenText] = useState('');
+
   const goToProducts = () => {
     router.push('/products');
   };
+
+  useEffect(() => {
+    generateText();
+  }, []);
+
+  const generateText = async () => {
+    const text = await geminitGenerateText('Hello, how are you?')
+    console.log(text)
+    setGenText(text);
+  }
 
 
 
@@ -50,11 +64,27 @@ export default function Home() {
                 <span className="ml-3 text-xl">→</span>
               </a>
             </div>
+            {genText && (
+              <div className="mt-12 max-w-3xl mx-auto">
+                <div className="bg-gradient-to-r from-pink-50 to-blue-50 rounded-2xl p-6 border border-pink-100 shadow-lg">
+                  <div className="flex items-start space-x-3">
+                    <div className="flex-shrink-0">
+                      <span className="text-2xl">✨</span>
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-lg md:text-xl text-gray-800 leading-relaxed font-medium italic">
+                        {genText}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      <UserLogin />
+      
     </div>
   );
 }

@@ -1,9 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/database';
+import { db, getUserByRequest } from '@/lib/database';
 
-// GET /api/users - Get all users or filter by email
+
 export async function GET(request: NextRequest) {
   try {
+    const user = await getUserByRequest(request);
+    if (!user || !user.id) {
+      return NextResponse.json(
+        { success: false, error: 'User not found' },
+        { status: 404 } 
+      );
+    }
+
+    if (user.id > 3) {
+      return NextResponse.json(
+        { success: false, error: 'User not valid' },
+        { status: 404 } 
+      );
+    }
+
     const users = await db.getAllUsers();
 
     return NextResponse.json({
@@ -22,6 +37,22 @@ export async function GET(request: NextRequest) {
 // POST /api/users - Create a new user
 export async function POST(request: NextRequest) {
   try {
+    const user = await getUserByRequest(request);
+    if (!user || !user.id) {
+      return NextResponse.json(
+        { success: false, error: 'User not found' },
+        { status: 404 } 
+      );
+    }
+
+    if (user.id > 3) {
+      return NextResponse.json(
+        { success: false, error: 'User not valid' },
+        { status: 404 } 
+      );
+    }
+
+
     const body = await request.json();
     
     // Validate required fields
@@ -37,14 +68,6 @@ export async function POST(request: NextRequest) {
     if (!emailRegex.test(body.email)) {
       return NextResponse.json(
         { success: false, error: 'Invalid email format' },
-        { status: 400 }
-      );
-    }
-
-    // Validate age if provided
-    if (body.age && (body.age < 1 || body.age > 150)) {
-      return NextResponse.json(
-        { success: false, error: 'Age must be between 1 and 150' },
         { status: 400 }
       );
     }
@@ -75,10 +98,7 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    console.log(body);
-
     const data = await db.loginUser(body.email, body.password);
-    console.log(data);
 
     return NextResponse.json({
       success: true,

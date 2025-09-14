@@ -1,17 +1,35 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useUserStore } from '@/store/userStore';
-import { loginUser } from '@/lib/fetch';
+import { getUserByToken, loginUser } from '@/lib/fetch';
 import { getDictionary } from '@/lib/i18n';
+import { useRouter } from 'next/navigation';
 
 export default function UserLogin() {
   const dict = getDictionary();
-  const { user, login } = useUserStore();
+  const { user, login, logout, setUser } = useUserStore();
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user) {
+      getCurrentUser();
+    }
+  }, [user?.id, user?.token]);
+
+  const getCurrentUser = async () => {
+    if (!user?.token) {
+      logout();
+      router.push('/products');
+    }
+    const token = user?.token || '';
+    const { data: dbUser, error } = await getUserByToken(token);
+    setUser(dbUser);
+  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

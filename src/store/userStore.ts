@@ -5,7 +5,10 @@ export interface User {
   id: number;
   name: string;
   email: string;
+  password: string;
   isLoggedIn: boolean;
+  created_at?: Date;
+  token?: string;
 }
 
 interface UserStore {
@@ -21,7 +24,10 @@ export const useUserStore = create<UserStore>()(
     (set, get) => ({
       user: null,
       
-      setUser: (user: User) => set({ user }),
+      setUser: (user: User) => {
+        user.isLoggedIn = true;
+        set({ user });
+      },
       
       updateUser: (updates: Partial<User>) => {
         const currentUser = get().user;

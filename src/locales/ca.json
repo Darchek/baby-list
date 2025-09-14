@@ -34,5 +34,9 @@
       "select": "Jo comparé aquest regal",
       "total_description": " regals a la llista",
       "view": "Mira el detall del regal"
+    },
+    "seo": {
+      "title": "Llista de regals per la Joana",
+      "description": "Web per a veure la llista de regals i reservar el que t'agradi més"
     }
   }

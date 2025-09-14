@@ -1,4 +1,4 @@
-import { Product } from "./database";
+import { Product, User } from "./database";
 
 
 function getUserToken() {
@@ -27,6 +27,76 @@ export const loginUser = async (email: string, password: string) => {
     const { data, error } = await response.json();
     return { data, error };
 }
+
+export const getUserList = async () => {
+    const userToken = getUserToken();
+    if (!userToken) {
+        return null;
+    }
+    const response = await fetch('/api/users', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${userToken}`,
+        },
+    });
+    const { data, error } = await response.json();
+    if (error) {
+        console.error('Error fetching users:', error);
+        throw error;
+    }
+    return data;
+}
+
+export const getUserByToken = async (token: string) => {
+    const response = await fetch('/api/users/token', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token }),
+    });
+    const { data, error } = await response.json();
+    return { data, error };
+}
+
+export const createUser = async (formUser: Partial<User>) => {
+    const userToken = getUserToken();
+    if (!userToken) {
+        return null;
+    }
+    const response = await fetch('/api/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${userToken}`,
+        },
+        body: JSON.stringify(formUser),
+      });
+
+      const result = await response.json();
+      return result;
+}
+
+export const resetPassword = async (formUser: Partial<User>) => {
+    const userToken = getUserToken();
+    if (!userToken) {
+        return null;
+    }
+    const response = await fetch('/api/users/token', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${userToken}`,
+        },
+        body: JSON.stringify(formUser),
+      });
+
+      const result = await response.json();
+      return result;
+}
+
+// PRODUCTS
     
 export const getProductList = async () => {
     const response = await fetch('/api/products');
@@ -84,4 +154,19 @@ export const createProduct = async (product: Partial<Product>) => {
       });
     const { data, error } = await response.json();
     return { data, error };
+}
+
+
+// GEMINI
+
+export const geminitGenerateText = async (prompt: string) => {
+    const response = await fetch('/api/gemini', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt: prompt }),
+      });
+    const { data, error } = await response.json();
+    return data;
 }

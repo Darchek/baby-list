@@ -3,10 +3,20 @@
 import { useUserStore } from '@/store/userStore';
 import { getDictionary } from '@/lib/i18n';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function Header() {
   const { user } = useUserStore();
   const dict = getDictionary();
+  const router = useRouter();
+
+  const goToProducts = () => {
+    router.push('/admin/products');
+  };
+
+  const goToUsers = () => {
+    router.push('/admin/users');
+  }
 
 
   return (
@@ -26,12 +36,20 @@ export default function Header() {
           {/* Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
             {
-              user && user?.id <= 3 && <Link 
-                href="/admin" 
-                className="text-gray-600 hover:text-gray-900 transition-colors font-medium"
+              user && user?.id <= 3 && <a 
+                onClick={goToProducts}
+                className="text-gray-600 hover:text-gray-900 transition-colors font-medium cursor-pointer"
               >
-                Admin
-              </Link>
+                Products
+              </a>
+            }
+            {
+              user && user?.id <= 3 && <a 
+                onClick={goToUsers}
+                className="text-gray-600 hover:text-gray-900 transition-colors font-medium cursor-pointer"
+              >
+                Users
+              </a>
             }
           </nav>
 

@@ -1,3 +1,4 @@
+import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from './supabase';
 
 // User interface for the application
@@ -33,6 +34,18 @@ function convertSupabaseRowToUser(row: any): User {
   };
 }
 
+function convertSupabaseRowToPartialUser(row: any): User {
+  return {
+    id: row.id,
+    name: row.name,
+    email: row.email,
+    password: '',
+    created_at: new Date(row.created_at),
+    token: '',
+  };
+}
+
+
 function convertSupabaseRowToProduct(row: any): Product {
   return {
     id: row.id,
@@ -44,6 +57,21 @@ function convertSupabaseRowToProduct(row: any): Product {
     reserved_by: row.reserved_by,
     created_at: new Date(row.created_at),
   };
+}
+
+export async function getUserByRequest(request: NextRequest): Promise<User> {
+  const authStr = request.headers.get('Authorization') || 'Bearer ';
+  const token = authStr.split('Bearer ')[1];
+
+  if (!token || token.length < 10) {
+    throw new Error('No token provided');
+  }
+
+  const user = await db.getUserByToken(token);
+  if (!user || !user.id) {
+    throw new Error('Token provided not valid');
+  }
+  return user;
 }
 
 export async function hashString(str: string) {
@@ -75,7 +103,7 @@ export const db = {
   async getAllUsers(): Promise<User[]> {
     const { data, error } = await supabase
       .from('user')
-      .select('*')
+      .select('id, name, email, created_at')
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -105,30 +133,32 @@ export const db = {
     return data ? convertSupabaseRowToUser(data) : null;
   },
 
-  // Get users by email (search)
-  async getUsersByEmail(email: string): Promise<User[]> {
-    const { data, error } = await supabase
-      .from('user')
-      .select('*')
-      .ilike('email', `%${email}%`)
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      console.error('Error fetching users by email:', error);
-      throw new Error('Failed to fetch users by email');
-    }
-
-    return data ? data.map(convertSupabaseRowToUser) : [];
-  },
+  // Get users by id
+  async getUsersById(id: number): Promise<User | null> {
+      const { data, error } = await supabase
+        .from('user')
+        .select('id, name, email, created_at')
+        .eq('id', id)
+        .single();
+  
+      if (error) {
+        console.error('Error fetching user by id:', error);
+        throw new Error('Failed to fetch user by id');
+      }
+  
+      return data ? convertSupabaseRowToPartialUser(data) : null;
+    },
 
   // Create new user
   async createUser(userData: Omit<User, 'id' | 'created_at'>): Promise<User> {
+    const hash_password = await hashString(userData.password);
+    
     const { data, error } = await supabase
       .from('user')
       .insert({
         name: userData.name,
         email: userData.email,
-        password: userData.password,
+        password: hash_password,
       })
       .select()
       .single();
@@ -206,7 +236,6 @@ export const db = {
 
     const new_token = await generateRandomToken(password);
     const new_data = await this.updateUser(data.id, { token: new_token });
-    console.log(new_data);
     return new_data;
   },
 

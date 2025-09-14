@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
+import { getDictionary } from "@/lib/i18n";
+import UserLogin from '@/components/UserLogin';
+
+const dictionary = getDictionary();
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,8 +18,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Baby List - Track Your Baby Essentials",
-  description: "A server-side rendered baby list app to track and manage baby essentials with database integration",
+  title: dictionary.seo.title,
+  description: dictionary.seo.description,
 };
 
 export default function RootLayout({
@@ -30,6 +34,8 @@ export default function RootLayout({
       >
         <Header />
         {children}
+
+        <UserLogin />
       </body>
     </html>
   );
