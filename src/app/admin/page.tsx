@@ -41,8 +41,7 @@ export default function AdminPage() {
       setEditingProduct(product);
       setIsModalOpen(true);
     };
-
-
+    
 
 
     const toggleActive = async (productId: number, currentActive: boolean) => {
