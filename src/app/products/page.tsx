@@ -32,14 +32,14 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pt-[76px]">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">🍼{dictionary.home.title}</h1>
           <p className="text-gray-600">{dictionary.home.description}</p>
           <div className="mt-4 text-sm text-gray-500">
-            {products.length} gift{products.length !== 1 ? 's' : ''} on the wishlist
+            {products.length} {dictionary.products.total_description}
           </div>
         </div>
 

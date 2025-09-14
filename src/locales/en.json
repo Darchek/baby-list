@@ -25,5 +25,14 @@
   },
   "header": {
     "title": "Joana - Llista de regals"
+  },
+  "products": {
+    "reserved": "Reservat",
+    "you_reserved": "Reservat per tu",
+    "reserved_large": "Algú portará aquest regal",
+    "you_reserved_large": "Molt bé! Tu portaras aquest regal",
+    "select": "Jo comparé aquest regal",
+    "total_description": " regals a la llista",
+    "view": "Mira el detall del regal"
   }
 }

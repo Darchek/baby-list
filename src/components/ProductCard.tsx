@@ -1,7 +1,9 @@
 'use client';
 
 import { Product } from '@/lib/database';
+import { getDictionary } from '@/lib/i18n';
 import { useState } from 'react';
+import { useUserStore } from '@/store/userStore';
 
 interface ProductCardProps {
   product: Product;
@@ -9,6 +11,8 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, onReserve }: ProductCardProps) {
+  const dictionary = getDictionary();
+  const { user } = useUserStore();
   const [isReserving, setIsReserving] = useState(false);
   const isReserved = !!product.reserved_by;
 
@@ -40,7 +44,7 @@ export default function ProductCard({ product, onReserve }: ProductCardProps) {
         </h3>
         {isReserved && (
           <div className="px-3 py-1 rounded-full text-sm font-medium bg-gray-200 text-gray-600">
-            💝 Reserved
+            💝 {product.reserved_by === user?.id ? dictionary.products.you_reserved : dictionary.products.reserved}
           </div>
         )}
       </div>
@@ -64,9 +68,9 @@ export default function ProductCard({ product, onReserve }: ProductCardProps) {
                 ? 'text-gray-400 hover:text-gray-500' 
                 : 'text-blue-600 hover:text-blue-800'
             }`}
-            title="View product details"
+            title={dictionary.products.view}
           >
-            🔗 View Product Details
+            🔗 {dictionary.products.view}
           </a>
         </div>
       )}
@@ -75,7 +79,7 @@ export default function ProductCard({ product, onReserve }: ProductCardProps) {
       {isReserved && (
         <div className="mb-4 p-3 bg-gray-200 border border-gray-300 rounded-lg">
           <p className="text-gray-600 text-sm font-medium">
-            🎁 Someone will bring this gift!
+            🎁 {product.reserved_by === user?.id ? dictionary.products.you_reserved_large : dictionary.products.reserved_large}
           </p>
         </div>
       )}
@@ -98,7 +102,7 @@ export default function ProductCard({ product, onReserve }: ProductCardProps) {
                 Reserving...
               </>
             ) : (
-              '🎁 I\'ll Buy This!'
+              '🎁 ' + dictionary.products.select
             )}
           </button>
         </div>
