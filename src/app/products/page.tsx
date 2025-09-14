@@ -1,6 +1,5 @@
 "use client";
 import ProductCard from '@/components/ProductCard';
-import UserLogin from '@/components/UserLogin';
 import { getDictionary } from "@/lib/i18n";
 import { useEffect, useState } from 'react';
 import { Product } from '@/lib/database';

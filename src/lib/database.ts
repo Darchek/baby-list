@@ -2,11 +2,11 @@ import { supabase } from './supabase';
 
 // User interface for the application
 export interface User {
-  id: number;
+  id?: number;
   name: string;
   email: string;
   password: string;
-  created_at: Date;
+  created_at?: Date;
 }
 
 export interface Product {
@@ -96,7 +96,7 @@ export const db = {
   },
 
   // Create new user
-  async createUser(userData: Omit<User, 'id' | 'createdAt'>): Promise<User> {
+  async createUser(userData: Omit<User, 'id' | 'created_at'>): Promise<User> {
     const { data, error } = await supabase
       .from('user')
       .insert({

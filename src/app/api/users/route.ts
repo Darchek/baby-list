@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db, User } from '@/lib/database';
-import { supabase } from '@/lib/supabase';
+import { db } from '@/lib/database';
 
 // GET /api/users - Get all users or filter by email
 export async function GET(request: NextRequest) {
   try {
-    let users: User[];
-    users = await db.getAllUsers();
+    const users = await db.getAllUsers();
 
     return NextResponse.json({
       success: true,
@@ -54,10 +52,7 @@ export async function POST(request: NextRequest) {
     const userData = {
       name: body.name,
       email: body.email,
-      age: body.age || undefined,
-      phone: body.phone || undefined,
-      address: body.address || undefined,
-      notes: body.notes || undefined,
+      password: body.password,
     };
 
     const newUser = await db.createUser(userData);

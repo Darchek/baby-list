@@ -1,6 +1,3 @@
-import { db } from '@/lib/database';
-import UserCard from '@/components/UserCard';
-import StatsCard from '@/components/StatsCard';
 import UserLogin from '@/components/UserLogin';
 import { getDictionary } from '@/lib/i18n';
 

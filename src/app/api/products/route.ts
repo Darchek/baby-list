@@ -3,8 +3,7 @@ import { db, Product } from '@/lib/database';
 
 export async function GET(request: NextRequest) {
   try {
-    let products: Product[];
-    products = await db.getProductsActivateList();
+    const products = await db.getProductsActivateList();
 
     return NextResponse.json({
       success: true,
