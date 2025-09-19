@@ -58,7 +58,7 @@ export default function AdminUserPage() {
       setShowResetPassword(true);
     };
 
-    if (!user || user?.id >= 3) {
+    if (!user || user?.id > 3) {
       return <NotAuthorized />;
     }
 

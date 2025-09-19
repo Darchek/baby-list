@@ -15,7 +15,7 @@ export async function PUT(
       );
     }
 
-    if (user.id >= 3) {
+    if (user.id > 3) {
       return NextResponse.json(
         { success: false, error: 'User not valid' },
         { status: 404 } 
@@ -70,7 +70,7 @@ export async function DELETE(
       );
     }
 
-    if (user.id >= 3) {
+    if (user.id > 3) {
       return NextResponse.json(
         { success: false, error: 'User not valid' },
         { status: 404 } 

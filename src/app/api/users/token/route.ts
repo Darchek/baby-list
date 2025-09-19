@@ -32,7 +32,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    if (user.id >= 3) {
+    if (user.id > 3) {
       return NextResponse.json(
         { success: false, error: 'User not valid' },
         { status: 404 } 

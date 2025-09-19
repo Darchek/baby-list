@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    if (user.id >= 3) {
+    if (user.id > 3) {
       return NextResponse.json(
         { success: false, error: 'User not valid' },
         { status: 404 } 
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (user.id >= 3) {
+    if (user.id > 3) {
       return NextResponse.json(
         { success: false, error: 'User not valid' },
         { status: 404 } 
