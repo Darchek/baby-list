@@ -57,7 +57,7 @@ export default function AdminProductPage() {
       }
     };
 
-  if (!user || user?.id > 3) {
+  if (!user || user?.id >= 3) {
     return <NotAuthorized />;
   }
 

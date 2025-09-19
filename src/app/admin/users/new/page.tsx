@@ -32,7 +32,7 @@ export default function AdminNewUserPage() {
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
-    if (!user || user?.id > 3) {
+    if (!user || user?.id >= 3) {
       return <NotAuthorized />;
     }
 

@@ -115,7 +115,7 @@ export const getProductAllList = async () => {
     }
 };
 
-export const updateProduct = async (id: number, product: Partial<Product>) => {
+export const updateProduct = async (id: number, product: Partial<Product>) => {s
     const userToken = getUserToken();
     if (!userToken) {
         return { data: null, error: 'No token provided' };
