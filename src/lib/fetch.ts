@@ -176,12 +176,9 @@ export const createProduct = async (product: Partial<Product>) => {
     return { data, error };
 }
 
-
-// GEMINI
-
 export const parseProduct = async (productUrl: string) => {
-    const response = await fetch('/api/gemini', {
-        method: 'POST',
+    const response = await fetch('/api/products', {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -191,13 +188,17 @@ export const parseProduct = async (productUrl: string) => {
     return data;
 }
 
-export const geminitGenerateText = async (prompt: string) => {
+
+
+// GEMINI
+
+export const geminiGenerateText = async (mode: string) => {
     const response = await fetch('/api/gemini', {
-        method: 'PUT',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ prompt: prompt }),
+        body: JSON.stringify({ mode: mode }),
       });
     const { data, error } = await response.json();
     return data;

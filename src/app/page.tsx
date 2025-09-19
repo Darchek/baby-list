@@ -3,7 +3,7 @@
 import { getDictionary } from '@/lib/i18n';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { geminitGenerateText } from '@/lib/fetch';
+import { geminiGenerateText } from '@/lib/fetch';
 
 export default function Home() {
   const dictionary = getDictionary();
@@ -20,7 +20,7 @@ export default function Home() {
   }, []);
 
   const generateText = async () => {
-    const text = await geminitGenerateText('Hello, how are you?')
+    const text = await geminiGenerateText('')
     setGenText(text);
   }
 

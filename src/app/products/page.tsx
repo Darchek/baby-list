@@ -4,17 +4,26 @@ import { getDictionary } from "@/lib/i18n";
 import { useEffect, useState } from 'react';
 import { Product } from '@/lib/database';
 import { useUserStore } from '@/store/userStore';
-import { getProductList, reserveProduct } from '@/lib/fetch';
+import ThanksModal from '@/components/ThanksModal';
+import { getProductList, reserveProduct, geminiGenerateText } from '@/lib/fetch';
 import NotAuthorized from '@/components/NotAuthorized';
 
 export default function ProductsPage() {
     const dictionary = getDictionary();
     const [products, setProducts] = useState<Product[]>([]);
     const { user } = useUserStore();
+    const [activeModal, setActiveModal] = useState(false);
+    const [genText, setGenText] = useState('');
 
     useEffect(() => {
       getActiveProducts();
     }, []);
+
+    useEffect(() => {
+      if (!activeModal) {
+        generateText();
+      }
+    }, [activeModal]);
 
   const getActiveProducts = async () => {
     const data = await getProductList();
@@ -24,9 +33,14 @@ export default function ProductsPage() {
   const onReserveProduct = async (id: number) => {
     const data = await reserveProduct(id);
     getActiveProducts();
+    setActiveModal(true);
   }
 
-      
+  const generateText = async () => {
+    const text = await geminiGenerateText('thanks');
+    setGenText(text);
+  }
+
   if (!user) {
     return <NotAuthorized />;
   }
@@ -64,6 +78,7 @@ export default function ProductsPage() {
 
         
       </div>
+      <ThanksModal active={activeModal} setActiveModal={setActiveModal} genText={genText} />
     </div>
   );
 }
