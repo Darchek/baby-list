@@ -23,11 +23,11 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     
     const productData = {
-      name: body.name,
-      description: body.description,
-      url: body.url || '',
-      image_url: body.image_url || '',
-      active: body.active !== undefined ? body.active : true,
+      name: body.product.name,
+      description: body.product.description,
+      url: body.product.url || '',
+      image_url: body.product.image_url || '',
+      active: body.product.active !== undefined ? body.product.active : true,
     };
 
     const newProduct = await db.createProduct(productData);

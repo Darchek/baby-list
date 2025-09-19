@@ -179,9 +179,21 @@ export const createProduct = async (product: Partial<Product>) => {
 
 // GEMINI
 
-export const geminitGenerateText = async (prompt: string) => {
+export const parseProduct = async (productUrl: string) => {
     const response = await fetch('/api/gemini', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productUrl: productUrl }),
+      });
+    const { data, error } = await response.json();
+    return data;
+}
+
+export const geminitGenerateText = async (prompt: string) => {
+    const response = await fetch('/api/gemini', {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
